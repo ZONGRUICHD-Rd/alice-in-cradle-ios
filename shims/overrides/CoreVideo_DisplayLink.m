@@ -175,7 +175,7 @@ CVReturn CVDisplayLinkStart(CVDisplayLinkRef ref) {
             CVTimeStamp tsOut = tsNow;
             tsOut.videoTime += tsNow.videoRefreshPeriod;
             CVOptionFlags outFlags = 0;
-            strong.callback((__bridge CVDisplayLinkRef)(__bridge void *)strong, &tsNow, &tsOut, 0, &outFlags, strong.context);
+            strong.callback((CVDisplayLinkRef)(__bridge void *)strong, &tsNow, &tsOut, 0, &outFlags, strong.context);
         });
         link.timer = timer;
         dispatch_resume(timer);
