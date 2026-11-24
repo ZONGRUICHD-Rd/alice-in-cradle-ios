@@ -1,6 +1,5 @@
 // SystemConfiguration macOS-only dynamic store / proxy stubs for iOS 27.
 #import <Foundation/Foundation.h>
-#import <SystemConfiguration/SystemConfiguration.h>
 
 #define EXPORT __attribute__((visibility("default")))
 
