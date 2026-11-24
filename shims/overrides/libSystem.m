@@ -23,7 +23,7 @@
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <sys/sysctl.h>
-#include <ucontext.h>
+#include <sys/ucontext.h>
 #include <unistd.h>
 
 #define EXPORT __attribute__((visibility("default")))
