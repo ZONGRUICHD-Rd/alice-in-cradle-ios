@@ -6,7 +6,6 @@
 #define EXPORT __attribute__((visibility("default")))
 
 typedef uint32_t CGDirectDisplayID;
-typedef int32_t CGError;
 typedef const struct __CGDisplayMode *CGDisplayModeRef;
 
 static _Atomic uint8_t gKeyStates[256];
