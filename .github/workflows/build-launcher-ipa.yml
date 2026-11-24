@@ -1,0 +1,71 @@
+name: Build Alice in Cradle iOS 27 Launcher IPA
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+    inputs:
+      runner_os:
+        description: "GitHub macOS / Xcode runner label"
+        required: true
+        default: "xcode-27"
+        type: choice
+        options:
+          - xcode-27
+          - macos-26
+          - macos-15
+      bundle_id:
+        description: "Launcher Bundle Identifier"
+        required: true
+        default: "com.alicecradle.ios.launcher"
+        type: string
+      min_ios:
+        description: "Minimum iOS deployment target"
+        required: true
+        default: "17.0"
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  build-launcher-ipa:
+    name: Build Separated Launcher & Shims IPA (iOS 27 / ARM64)
+    runs-on: ${{ inputs.runner_os || 'xcode-27' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Verify Xcode & iPhoneOS SDK
+        run: |
+          xcodebuild -version
+          xcrun --sdk iphoneos --show-sdk-version
+          xcrun --sdk iphoneos --show-sdk-path
+          python3 --version
+
+      - name: Run copyright & unit test checks
+        run: |
+          python3 tools/audit_public.py
+          python3 -m unittest discover -s tests -v
+
+      - name: Compile 13 iOS 27 Shims & Separated Launcher IPA
+        run: |
+          python3 tools/build_launcher_ipa.py \
+            --work build \
+            --output dist/AliceCradleLauncher-iOS27-Unsigned.ipa \
+            --bundle-id "${{ inputs.bundle_id || 'com.alicecradle.ios.launcher' }}" \
+            --min-ios "${{ inputs.min_ios || '17.0' }}"
+
+      - name: Generate SHA-256 checksum & IPA manifest
+        run: |
+          shasum -a 256 dist/AliceCradleLauncher-iOS27-Unsigned.ipa | tee dist/SHA256SUMS.txt
+          unzip -l dist/AliceCradleLauncher-iOS27-Unsigned.ipa | head -n 60
+
+      - name: Upload AliceCradleLauncher Unsigned IPA Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AliceCradleLauncher-iOS27-Unsigned-IPA
+          path: |
+            dist/AliceCradleLauncher-iOS27-Unsigned.ipa
+            dist/SHA256SUMS.txt
+          retention-days: 30

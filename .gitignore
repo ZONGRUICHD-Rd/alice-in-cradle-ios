@@ -1,0 +1,29 @@
+# Build outputs & working staging directories
+build/
+dist/
+work/
+out/
+*.ipa
+*.xcarchive
+*.app/
+*.dylib
+*.o
+*.a
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+
+# Never commit copyrighted game assets, assemblies, or signing material
+*.assets
+*.resource
+*.resS
+*.unity3d
+*.dll
+*.exe
+*.p12
+*.mobileprovision
+*.cer
+AliceInCradle*/
+GameData/
+Saves/

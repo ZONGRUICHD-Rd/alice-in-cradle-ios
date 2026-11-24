@@ -1,0 +1,24 @@
+name: Source Checks & Unit Tests
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Audit repository for game/signing files
+        run: python3 tools/audit_public.py
+      - name: Run Mach-O & tool unit tests
+        run: python3 -m unittest discover -s tests -v
+      - name: Test procedural icon generator
+        run: python3 tools/make_icon.py --out-dir build/test-icons
